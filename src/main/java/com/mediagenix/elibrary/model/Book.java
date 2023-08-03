@@ -1,10 +1,9 @@
 package com.mediagenix.elibrary.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class Book {
@@ -15,7 +14,14 @@ public class Book {
 
     private String title;
 
+    @Column(unique = true)
     private String isbn;
 
     private String author;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
