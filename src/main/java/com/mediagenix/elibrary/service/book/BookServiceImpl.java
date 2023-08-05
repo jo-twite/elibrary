@@ -1,12 +1,15 @@
 package com.mediagenix.elibrary.service.book;
 
 import com.mediagenix.elibrary.repository.book.BookRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public class BookServiceImpl implements BookService{
+
+@Service
+@AllArgsConstructor
+@NoArgsConstructor
+public class BookServiceImpl implements BookService {
 
     private BookRepository repository;
-
-    public BookServiceImpl(BookRepository bookRepository) {
-        this.repository = bookRepository;
-    }
 }
