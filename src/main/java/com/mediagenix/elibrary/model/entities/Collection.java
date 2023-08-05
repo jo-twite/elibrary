@@ -4,7 +4,6 @@ package com.mediagenix.elibrary.model.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
