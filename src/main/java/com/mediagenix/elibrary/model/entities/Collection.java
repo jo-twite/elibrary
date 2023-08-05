@@ -1,11 +1,11 @@
-package com.mediagenix.elibrary.model;
+package com.mediagenix.elibrary.model.entities;
 
 
 import jakarta.persistence.*;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Collection {
@@ -16,13 +16,13 @@ public class Collection {
 
     private String name;
 
-    @ManyToMany
-    private List<Book> books;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToMany(mappedBy = "collections ")
+    private Set<Book> books;
 
 }

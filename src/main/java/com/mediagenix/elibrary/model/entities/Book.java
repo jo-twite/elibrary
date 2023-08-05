@@ -1,9 +1,10 @@
-package com.mediagenix.elibrary.model;
+package com.mediagenix.elibrary.model.entities;
 
 
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 public class Book {
@@ -24,4 +25,13 @@ public class Book {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "BOOK_COLLECTION",
+            joinColumns = @JoinColumn(name = "BOOK_ID"),
+            inverseJoinColumns = @JoinColumn(name = "COLLECTION_ID")
+    )
+    Set<Collection> collections;
+
 }
