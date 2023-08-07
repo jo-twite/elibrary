@@ -1,23 +1,35 @@
-package com.mediagenix.elibrary.model.entities;
+package com.mediagenix.elibrary.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
+@Getter @Setter
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title cannot be blank")
+    @NotNull(message = "Title cannot be null")
     private String title;
 
-    @Column(unique = true)
+    @NotBlank(message = "Isbn cannot be blank")
+    @NotNull(message = "Isbn cannot be null")
     private String isbn;
 
+    @NotBlank(message = "Author cannot be blank")
+    @NotNull(message = "Author cannot be null")
     private String author;
 
     @Column(name = "created_at")

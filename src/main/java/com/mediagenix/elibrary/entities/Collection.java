@@ -1,4 +1,4 @@
-package com.mediagenix.elibrary.model.entities;
+package com.mediagenix.elibrary.entities;
 
 
 import jakarta.persistence.*;
@@ -21,7 +21,7 @@ public class Collection {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToMany(mappedBy = "collections ")
+    @ManyToMany(mappedBy = "collections")
     private Set<Book> books;
 
 }
