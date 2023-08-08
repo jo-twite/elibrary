@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=elibrary
+      - POSTGRES_USER=twitej
+      - POSTGRES_PASSWORD=twitej
+    volumes:
+      - ./data:/var/lib/postgresql/data

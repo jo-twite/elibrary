@@ -1,12 +1,15 @@
 package com.mediagenix.elibrary.mapper;
 
 
+import com.mediagenix.elibrary.dto.BookDTO;
 import com.mediagenix.elibrary.dto.CollectionDTO;
+import com.mediagenix.elibrary.entities.Book;
 import com.mediagenix.elibrary.entities.Collection;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface CollectionMapper {
@@ -18,5 +21,13 @@ public interface CollectionMapper {
 
     Collection map(CollectionDTO collectionDTO);
 
-    public List<CollectionDTO> map(List<Collection> collections);
+    List<CollectionDTO> asDTOList(List<Collection> collections);
+
+    BookDTO map(Book book);
+
+    Book map(BookDTO bookDTO);
+
+    Set<BookDTO> asBookDTOSet(Set<Book> bookSet);
+
+    Set<Book> asBookSet(Set<BookDTO> bookDTOSet);
 }
