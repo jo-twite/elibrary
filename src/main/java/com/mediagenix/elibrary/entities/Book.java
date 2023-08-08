@@ -1,14 +1,14 @@
 package com.mediagenix.elibrary.entities;
 
 
+import com.mediagenix.elibrary.dto.BookDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -20,16 +20,11 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title cannot be blank")
-    @NotNull(message = "Title cannot be null")
     private String title;
 
-    @NotBlank(message = "Isbn cannot be blank")
-    @NotNull(message = "Isbn cannot be null")
+    @Column(unique=true)
     private String isbn;
 
-    @NotBlank(message = "Author cannot be blank")
-    @NotNull(message = "Author cannot be null")
     private String author;
 
     @Column(name = "created_at")
@@ -45,5 +40,18 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "COLLECTION_ID")
     )
     Set<Collection> collections;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book that)) return false;
+        if (!(o instanceof BookDTO that2)) return false;
+        return this.id == that.id || this.id == that2.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }

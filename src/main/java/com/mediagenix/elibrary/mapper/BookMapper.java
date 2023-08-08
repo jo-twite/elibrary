@@ -5,7 +5,7 @@ import com.mediagenix.elibrary.entities.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface BookMapper {
@@ -15,6 +15,7 @@ public interface BookMapper {
     BookDTO map(Book book);
 
     Book map(BookDTO bookDTO);
+    Set<BookDTO> asDTOSet(Set<BookDTO> books);
 
-    public List<BookDTO> map(List<Book> bookEntities);
+    Set<Book> asBookSet(Set<BookDTO> bookDTOs);
 }
