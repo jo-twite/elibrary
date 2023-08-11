@@ -73,7 +73,11 @@ public class CollectionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCollectionById(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteCollectionById(@PathVariable Long id, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errorMessages);
+        }
         if (id == null || id <= 0) {
             return ResponseEntity.badRequest().body("Invalid collection ID. Please provide a valid positive number.");
         }
@@ -86,10 +90,6 @@ public class CollectionController {
         }
     }
 
-
-    /** TODO
-     * * if book exists in Collection
-     */
     @PostMapping("/{collectionId}/addBook/{bookId}")
     public ResponseEntity<?> addToCollection(@PathVariable Long bookId, @PathVariable Long collectionId) {
         try {
@@ -119,4 +119,12 @@ public class CollectionController {
             return ResponseEntity.internalServerError().build();
         }
     }
-}
+
+    private ResponseEntity<Object> anyBindingResult(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errorMessages);
+        }
+        return null;
+    }
+ }
