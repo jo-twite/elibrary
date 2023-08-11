@@ -73,11 +73,8 @@ public class CollectionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCollectionById(@PathVariable Long id, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errorMessages);
-        }
+    public ResponseEntity<Object> deleteCollectionById(@PathVariable Long id) {
+
         if (id == null || id <= 0) {
             return ResponseEntity.badRequest().body("Invalid collection ID. Please provide a valid positive number.");
         }

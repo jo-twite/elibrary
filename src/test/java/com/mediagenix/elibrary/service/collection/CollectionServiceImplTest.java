@@ -76,7 +76,7 @@ class CollectionServiceImplTest {
 
     @Test
     void testUpdateCollection() {
-        Long collectionId = 1L;
+        Long collectionId = any(Long.class);
         CollectionDTO collectionDTO = new CollectionDTO();
         collectionDTO.setName("Updated Collection");
 
