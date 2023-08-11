@@ -16,8 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -30,10 +32,10 @@ import java.util.Set;
 @Service
 public class CollectionServiceImpl implements CollectionService {
 
-    private CollectionRepository collectionRepository;
-    private CollectionMapper mapper;
-    private BookMapper bookMapper;
-    private BookService bookService;
+    private final CollectionRepository collectionRepository;
+    private final CollectionMapper mapper;
+    private final BookMapper bookMapper;
+    private final BookService bookService;
 
     public CollectionServiceImpl(CollectionRepository collectionRepository, BookService bookService) {
         this.collectionRepository = collectionRepository;
@@ -78,10 +80,7 @@ public class CollectionServiceImpl implements CollectionService {
         Collection collection = findById(id);
         collection.setUpdatedAt(LocalDateTime.now());
         collection.setName(collectionDTO.getName());
-
-        Set<BookDTO> bookDTOs = collectionDTO.getBooks();
-        Set<Book> books = bookMapper.asBookSet(bookDTOs);
-        collection.setBooks(books);
+        setBooks(collection, collectionDTO.getBooks());
 
         return mapper.map(collection);
     }
@@ -91,7 +90,7 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public Void deleteById(Long id) {
         collectionRepository.deleteById(id);
-        return Void.TYPE.cast(id);
+        return null;
     }
 
     @Transactional
@@ -100,16 +99,14 @@ public class CollectionServiceImpl implements CollectionService {
         Object[] bookAndCollection = findBookAndCollection(bookId, collectionId);
         Book book = (Book) bookAndCollection[0];
         Collection collection = (Collection) bookAndCollection[1];
-        Boolean added = collection.getBooks().add(book);
-        if(added) {
-            collection.setCreatedAt(LocalDateTime.now());
-            for(Book b: collection.getBooks()) {
-                System.out.println(book.getId());
-            }
+        Boolean added = null;
+        if (collection.getBooks() == null) {
+            collection.setBooks(Set.of(book));
+            added = true;
+        } if(!(added = collection.getBooks().add(book))) {
+            throw new RuntimeException("Book not added");
         }
-        else {
-            System.out.println("Book not added");
-        }
+        collection.setCreatedAt(LocalDateTime.now());
         return mapper.map(collectionRepository.save(collection));
     }
 
@@ -119,14 +116,21 @@ public class CollectionServiceImpl implements CollectionService {
         Object[] bookAndCollection = findBookAndCollection(bookId, collectionId);
         Book book = (Book) bookAndCollection[0];
         Collection collection = (Collection) bookAndCollection[1];
-        Boolean removed = collection.getBooks().remove(book);
-        collection.setCreatedAt(LocalDateTime.now());
-        return mapper.map(collectionRepository.save(collection));
+
+        Set<Book> updatedBooks = new HashSet<>(collection.getBooks());
+        updatedBooks.remove(book);
+
+        collection.setBooks(updatedBooks);
+        collection.setUpdatedAt(LocalDateTime.now());
+
+        Collection updatedCollection = collectionRepository.save(collection);
+        return mapper.map(updatedCollection);
     }
+
 
     /* @HELPERS */
 
-    private Object[] findBookAndCollection(Long bookId, Long collectionId) {
+    Object[] findBookAndCollection(Long bookId, Long collectionId) {
         Book book = bookService.findById(bookId);
         Collection collection = findById(collectionId);
 
@@ -141,14 +145,7 @@ public class CollectionServiceImpl implements CollectionService {
         return new Object[] {book, collection};
     }
 
-    /**
-     * @HELPER
-     * @return: Not null ->0
-     * Book null -> 1
-     * Collection null -> 2
-     * both null -> 3
-     */
-    private int anyNull(Book book, Collection collection) {
+    int anyNull(Book book, Collection collection) {
         int error = 0;
         if (book == null) {
             error = 1;
@@ -157,6 +154,15 @@ public class CollectionServiceImpl implements CollectionService {
             error += 2;
         }
         return error;
+    }
+
+    private Set<Book> setBooks(Collection collection, Set<BookDTO> bookDTOS) {
+        Set<Book> updatedBooks = bookDTOS.stream().map(
+                (dto -> bookService.findById(dto.getId()))).collect(Collectors.toSet());
+        if (updatedBooks.size() != bookDTOS.size()) {
+            throw new EntityNotFoundException("Please provide only books that exist.");
+        }
+        return updatedBooks;
     }
 
 }

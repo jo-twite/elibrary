@@ -32,8 +32,8 @@ public class BookController {
     public ResponseEntity<List<BookDTO>> getAll() {
         try {
             return ResponseEntity.ok(bookService.getAllBookDTOs());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 

@@ -16,11 +16,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+/**
+ * CONVENTIONS
+ * Return only DTO's to controller
+ * getters named with find return Entities, only used by services
+ * getters named with get return DTOs, mostly used by controllers
+ */
+
 @Service
 public class BookServiceImpl implements BookService {
 
     private BookRepository bookRepository;
-    BookMapper bookMapper;
+    private final BookMapper bookMapper;
 
     public BookServiceImpl(BookRepository repository) {
      this.bookRepository = repository;
